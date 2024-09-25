@@ -1,0 +1,89 @@
+erDiagram
+    USER {
+        int id PK
+        string id_type
+        string id_number
+        string name
+        string email unique
+        string password
+        string phone
+        string address
+        date birth_date
+        timestamp registration_date
+        string status
+        timestamp created
+        string created_by
+        timestamp updated
+        string updated_by
+    }
+
+    ACCOUNT {
+        int id PK
+        string account_number unique
+        string account_type
+        float balance
+        timestamp creation_date
+        string status
+        int user_id FK
+        timestamp created
+        string created_by
+        timestamp updated
+        string updated_by
+    }
+
+    TRANSACTION {
+        int id PK
+        timestamp date
+        string type
+        float amount
+        string description
+        int source_account_id FK
+        int destination_account_id FK nullable
+        string status
+        timestamp created
+        string created_by
+        timestamp updated
+        string updated_by
+    }
+
+    NOTIFICATION {
+        int id PK
+        string type
+        string message
+        timestamp send_date
+        int user_id FK
+        string status
+        timestamp created
+        string created_by
+        timestamp updated
+        string updated_by
+    }
+
+    SESSION {
+        int id PK
+        string token unique
+        timestamp creation_date
+        timestamp expiration_date
+        int user_id FK
+        boolean terminated_by_user
+        timestamp created
+        string created_by
+        timestamp updated
+        string updated_by
+    }
+
+    SYSTEM_CONFIGURATION {
+        int id PK
+        string name
+        string value
+        string description
+        timestamp created
+        string created_by
+        timestamp updated
+        string updated_by
+    }
+
+    USER ||--o{ ACCOUNT : "has"
+    ACCOUNT ||--o{ TRANSACTION : "contains"
+    USER ||--o{ NOTIFICATION : "receives"
+    USER ||--o{ SESSION : "creates"

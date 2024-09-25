@@ -1,0 +1,183 @@
+openapi: 3.0.3
+info:
+  title: SparkBank API
+  description: API para la gestión de usuarios, cuentas y transacciones de SparkBank.
+  version: 1.0.0
+servers:
+  - url: https://api.sparkbank.com/v1
+    description: Servidor principal de SparkBank API
+
+paths:
+  /users:
+    post:
+      summary: Crear un nuevo usuario
+      description: Registra un nuevo usuario en el sistema.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                tipo_identificacion:
+                  type: string
+                  example: DNI
+                numero_identificacion:
+                  type: string
+                  example: '12345678A'
+                nombre:
+                  type: string
+                  example: Juan Pérez
+                correo_electronico:
+                  type: string
+                  example: juan.perez@example.com
+                contraseña:
+                  type: string
+                  example: P@ssw0rd!
+                telefono:
+                  type: string
+                  example: '+1234567890'
+                direccion:
+                  type: string
+                  example: Calle Falsa 123
+                fecha_nacimiento:
+                  type: string
+                  format: date
+                  example: '1980-01-01'
+              required:
+                - tipo_identificacion
+                - numero_identificacion
+                - nombre
+                - correo_electronico
+                - contraseña
+      responses:
+        '201':
+          description: Usuario creado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  tipo_identificacion:
+                    type: string
+                    example: DNI
+                  numero_identificacion:
+                    type: string
+                    example: '12345678A'
+                  nombre:
+                    type: string
+                    example: Juan Pérez
+                  correo_electronico:
+                    type: string
+                    example: juan.perez@example.com
+                  telefono:
+                    type: string
+                    example: '+1234567890'
+                  direccion:
+                    type: string
+                    example: Calle Falsa 123
+                  fecha_nacimiento:
+                    type: string
+                    format: date
+                    example: '1980-01-01'
+        '400':
+          description: Solicitud inválida
+
+  /accounts:
+    post:
+      summary: Crear una nueva cuenta
+      description: Crea una nueva cuenta bancaria para un usuario.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                numero_cuenta:
+                  type: string
+                  example: 'ES1234567890123456789012'
+                tipo_cuenta:
+                  type: string
+                  example: ahorro
+                saldo:
+                  type: number
+                  format: float
+                  example: 1000.00
+                usuario_id:
+                  type: integer
+                  example: 1
+              required:
+                - numero_cuenta
+                - tipo_cuenta
+                - saldo
+                - usuario_id
+      responses:
+        '201':
+          description: Cuenta creada exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  numero_cuenta:
+                    type: string
+                    example: 'ES1234567890123456789012'
+                  tipo_cuenta:
+                    type: string
+                    example: ahorro
+                  saldo:
+                    type: number
+                    format: float
+                    example: 1000.00
+                  usuario_id:
+                    type: integer
+                    example: 1
+        '400':
+          description: Solicitud inválida
+
+  /users/{id}/accounts:
+    get:
+      summary: Obtener todas las cuentas de un usuario
+      description: Obtiene todas las cuentas asociadas a un usuario específico.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del usuario para el cual se obtienen las cuentas.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Lista de cuentas del usuario
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 1
+                    numero_cuenta:
+                      type: string
+                      example: 'ES1234567890123456789012'
+                    tipo_cuenta:
+                      type: string
+                      example: ahorro
+                    saldo:
+                      type: number
+                      format: float
+                      example: 1000.00
+                    usuario_id:
+                      type: integer
+                      example: 1
+        '404':
+          description: Usuario no encontrado
