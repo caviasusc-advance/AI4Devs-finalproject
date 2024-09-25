@@ -497,8 +497,6 @@ Como usuario registrado, quiero crear una nueva cuenta bancaria para gestionar m
 
 ## 6. Tickets de Trabajo
 
-> Documenta 3 de los tickets de trabajo principales del desarrollo, uno de backend, uno de frontend, y uno de bases de datos. Da todo el detalle requerido para desarrollar la tarea de inicio a fin teniendo en cuenta las buenas prácticas al respecto. 
-
 ### **Ticket 1: Crear las tablas en PostgreSQL (HU1)** 
 **Título:** 
 Crear las tablas en PostgreSQL 

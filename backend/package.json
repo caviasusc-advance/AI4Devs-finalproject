@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "node src/index.js",
     "migrate": "node -r dotenv/config ./node_modules/knex/bin/cli.js migrate:latest --knexfile ./db/knexfile.cjs",
+    "seed": "node -r dotenv/config ./node_modules/knex/bin/cli.js seed:run --knexfile ./db/knexfile.cjs",
+    "test": "jest",
     "start": "node src/index.js"
   },
   "author": "",
@@ -15,5 +17,9 @@
     "express": "^4.21.0",
     "knex": "^3.1.0",
     "pg": "^8.12.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^7.0.0"
   }
 }
