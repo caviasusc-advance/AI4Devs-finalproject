@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "dev": "node src/index.js",
+    "dev": "nodemon src/index.js",
     "migrate": "node -r dotenv/config ./node_modules/knex/bin/cli.js migrate:latest --knexfile ./db/knexfile.cjs",
     "seed": "node -r dotenv/config ./node_modules/knex/bin/cli.js seed:run --knexfile ./db/knexfile.cjs",
     "test": "jest",
@@ -20,6 +20,7 @@
   },
   "devDependencies": {
     "jest": "^29.7.0",
+    "nodemon": "^3.1.7",
     "supertest": "^7.0.0"
   }
 }

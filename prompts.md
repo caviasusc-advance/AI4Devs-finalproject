@@ -194,7 +194,7 @@ del @readme
 
 - - -
 
-Crea la ruta en @accountRoutes.js y las funciones correspondientes en los archivos @accountController.js @createAccountDTO.js y @Account.js necesarias para completar el ticket @
+Crea la ruta en @accountRoutes.js y las funciones correspondientes en los archivos @accountController.js @createAccountDTO.js y @Account.js necesarias para completar el ticket @ticket4-HU3.md
 
 - - -
 
@@ -210,3 +210,62 @@ describe los tests 'should create a new account successfully' y 'should return a
 
 - - - 
 
+Vamos a crear los tests E2E para @Signin.jsx  con cypress en @Signin.cy.js 
+
+- - - 
+
+Genera las instrucciones para instalar y poner en marcha el proyecto en local (librerías, backend, frontend, servidor, base de datos, migraciones y semillas de datos, etc.)
+
+- - - 
+
+Representa la estructura del proyecto y explica brevemente el propósito de las carpetas principales, así como si obedece a algún patrón o arquitectura específica.
+
+- - - 
+
+Haz los cambios necesarios en @Home.jsx para completar el @ticket5-HU3.md
+
+- - -
+
+Continuemos creando funcionalidades del proyecto. Crea la ruta en @accountRoutes.js y las funciones correspondientes en los archivos @accountController.js @createAccountDTO.js y @Account.js necesarias para completar el ticket @ticket8-HU4.md
+
+- - - 
+
+Haz los cambios necesarios en @Home.jsx para completar el ticket @ticket9-HU4.md
+
+- - - 
+
+Vamos a crear la historia 5. Será la creacion de transacciones: 
+- una transaccion puede tener un origen o destino externo.  
+- En caso que la cuenta sea interna(source_account_id valido), verificar que se tengan fondos suficientes.
+- Si la transaccion es exitosa actualizar el balance de la(s) cuenta(s) interna(s) involucrada(s)
+
+
+- - - 
+
+Crea los tickets correspondientes a la historia @HU5.md
+
+- - - 
+
+Crea la ruta en @transactionRoutes.js y las funciones correspondientes en los archivos @transactionController.js @createTransactionDTO.js y @Transaction.js necesarias para completar el ticket @ticket5-HU3.md
+
+- - - 
+
+crea el modelo de la tabla system_configuration en @SystemConfiguration, debe tener un metodo para retornar registros por las parejas tipo-nombre y tipo-valor
+
+- - - 
+
+en @accountController.js account_type debe corresponder a un valor de system_configuration con type: accountType
+
+- - - 
+
+en @userController.js id_type debe corresponder a un valor de system_configuration con type: documentType
+
+- - - 
+
+Haz los cambios necesarios en @Transactions.jsx para completar el ticket @ticket11-HU5.md usa el componente @select.jsx para cuenta de origen y @baseInput para los demas 
+
+- - - 
+
+crea en endpoint GET /system/:type en @systemConfigurationRoutes.js que retorne las columnas name, value y description de los registros donde el type coincida
+
+- - - 

@@ -5,6 +5,7 @@ import { COOKIES } from '@/lib/constants';
 import { useCookies } from 'react-cookie';
 import Home from '@/assets/svg/home.svg?react';
 import MenuIcon from '@/assets/svg/menu.svg?react';
+import TransactionIcon from '@/assets/svg/transaction.svg?react';
 import { useNavigate, Link } from 'react-router-dom';
 
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '../ui/collapsible';
@@ -46,12 +47,13 @@ export default function SignedLayout() {
           </CollapsibleTrigger>
         <div className='w-12 relative'>
 
-          <div className='absolute flex flex-col items-start w-40'>
+          <div className='absolute flex flex-col items-start w-48'>
             <NavItem label='Inicio' path ='/' Icon={Home}/>
+            <NavItem label='Transacciones' path ='/transaction' Icon={TransactionIcon}/>
           </div>
         </div>
         <CollapsibleContent>
-        <div className='w-28'/>
+        <div className='w-32'/>
           
         </CollapsibleContent>
       </Collapsible>

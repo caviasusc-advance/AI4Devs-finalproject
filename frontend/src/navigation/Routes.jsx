@@ -2,6 +2,7 @@ import React from "react";
 import Signin from "@/screens/Signin";
 import Login from "@/screens/Login";
 import Home from "@/screens/Home";
+import Transactions from "@/screens/Transactions";
 import ErrorScreen from "@/screens/ErrorScreen";
 import UnSignedLayout from "@/components/layout/UnSignedLayout";
 import SignedLayout from "@/components/layout/SignedLayout";
@@ -34,12 +35,13 @@ const router = createBrowserRouter(createRoutesFromElements(
             errorElement={<ErrorScreen />}
         >
             <Route path="/" element={<Home/>}/>
+            <Route path="/transaction" element={<Transactions/>}/>
         </Route>
         <Route
             element={<UnSignedLayout />}
             errorElement={<ErrorScreen />}
         >
-            <Route path="/Signin" element={<Signin/>}/>
+            <Route path="/signin" element={<Signin/>}/>
             <Route path="/login" element={<Login/>}/>
         </Route>
     </>

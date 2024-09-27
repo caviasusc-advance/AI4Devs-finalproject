@@ -21,7 +21,7 @@ const InputBase = React.forwardRef(({ className, rootClassName, type, label, lab
         ref={ref}
         {...props}
       />
-      {!!error && <p className='text-right text-xs text-red-600 font-normal'>{error}</p>}
+      {!!error && <p id={id + '-error'} className='text-right text-xs text-red-600 font-normal'>{error}</p>}
     </fieldset>
   );
 });

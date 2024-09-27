@@ -40,7 +40,7 @@ export default function Signin() {
 
   async function onSubmit(values) {
     try {
-      const res = await fetch.post('/users', values);
+      const res = await fetch.post(`${import.meta.env.VITE_API_URL}/users`, values);
       if (res.data.error) throw new Error(res.data.error);
 
       setCookie('log-state', 'log');

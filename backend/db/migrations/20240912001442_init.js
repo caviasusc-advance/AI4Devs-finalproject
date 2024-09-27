@@ -13,7 +13,7 @@ async function up(knex) {
         table.timestamp('registration_date');
         table.string('status');
         table.timestamp('created');
-        table.string('created_by');
+        table.string('created_by').defaultTo(knex.fn.now());
         table.timestamp('updated');
         table.string('updated_by');
     });
@@ -28,7 +28,7 @@ async function up(knex) {
         table.string('status');
         table.integer('user_id').references('id').inTable('user');
         table.timestamp('created');
-        table.string('created_by');
+        table.string('created_by').defaultTo(knex.fn.now());
         table.timestamp('updated');
         table.string('updated_by');
     });
@@ -37,14 +37,15 @@ async function up(knex) {
     await knex.schema.createTable('transaction', table => {
         table.increments('id').primary();
         table.timestamp('date');
-        table.string('type');
         table.float('amount');
         table.string('description');
-        table.integer('source_account_id').references('id').inTable('account');
+        table.integer('source_account_id').references('id').inTable('account').nullable();
+        table.string('source_account_number');
         table.integer('destination_account_id').references('id').inTable('account').nullable();
+        table.string('destination_account_number');
         table.string('status');
         table.timestamp('created');
-        table.string('created_by');
+        table.string('created_by').defaultTo(knex.fn.now());
         table.timestamp('updated');
         table.string('updated_by');
     });
@@ -58,7 +59,7 @@ async function up(knex) {
         table.integer('user_id').references('id').inTable('user');
         table.string('status');
         table.timestamp('created');
-        table.string('created_by');
+        table.string('created_by').defaultTo(knex.fn.now());
         table.timestamp('updated');
         table.string('updated_by');
     });
@@ -72,7 +73,7 @@ async function up(knex) {
         table.integer('user_id').references('id').inTable('user');
         table.boolean('terminated_by_user');
         table.timestamp('created');
-        table.string('created_by');
+        table.string('created_by').defaultTo(knex.fn.now());
         table.timestamp('updated');
         table.string('updated_by');
     });
@@ -80,13 +81,16 @@ async function up(knex) {
     // Creation of the SYSTEM_CONFIGURATION table
     await knex.schema.createTable('system_configuration', table => {
         table.increments('id').primary();
+        table.string('type');
         table.string('name');
         table.string('value');
         table.string('description');
         table.timestamp('created');
-        table.string('created_by');
+        table.string('created_by').defaultTo(knex.fn.now());
         table.timestamp('updated');
         table.string('updated_by');
+        table.unique(['type', 'value']);
+        table.unique(['type', 'name']);
     });
 }
 

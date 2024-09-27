@@ -7,6 +7,7 @@ Desarrollar un endpoint en la API para permitir la creación de cuentas bancaria
 - El endpoint `POST /accounts` recibe la información de la cuenta y crea una nueva cuenta bancaria en la base de datos.
 - el número de cuenta corresponde a un número aleatorio de 12 digitos y debe ser único. en caso que el numero exista reintentar la generacion del numero un maximo de 5 veces 
 - Se validan los datos ingresados para asegurar que los campos obligatorios están completos.
+- account_type debe corresponder a un valor de system_configuration con type: accountType
 
 **Prioridad:**
 Alta

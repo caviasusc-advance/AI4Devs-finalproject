@@ -27,11 +27,11 @@ Spark Bank
 
 ### **0.4. URL del proyecto:**
 
-> Puede ser pública o privada, en cuyo caso deberás compartir los accesos de manera segura. Puedes enviarlos a [alvaro@lidr.co](mailto:alvaro@lidr.co) usando algún servicio como [onetimesecret](https://onetimesecret.com/).
+
 
 ### 0.5. URL o archivo comprimido del repositorio
 
-> Puedes tenerlo alojado en público o en privado, en cuyo caso deberás compartir los accesos de manera segura. Puedes enviarlos a [alvaro@lidr.co](mailto:alvaro@lidr.co) usando algún servicio como [onetimesecret](https://onetimesecret.com/). También puedes compartir por correo un archivo zip con el contenido
+[https://github.com/caviasusc-advance/AI4Devs-finalproject](https://github.com/caviasusc-advance/AI4Devs-finalproject)
 
 
 ---
@@ -78,7 +78,33 @@ Conectividad con Otros Bancos: Permitir la agregación de cuentas de otros banco
 > Proporciona imágenes y/o videotutorial mostrando la experiencia del usuario desde que aterriza en la aplicación, pasando por todas las funcionalidades principales.
 
 ### **1.4. Instrucciones de instalación:**
-> Documenta de manera precisa las instrucciones para instalar y poner en marcha el proyecto en local (librerías, backend, frontend, servidor, base de datos, migraciones y semillas de datos, etc.)
+En la raiz del proyecto iniciar la base de datos usando  ```docker compose up -d```
+Editar .env con las credenciales de la base de datos
+
+**Configuración del Backend**
+
+```
+cd backend
+npm install
+# Editar .env con las credenciales de la base de datos
+npm migrate
+npm seed
+npm start
+```
+
+**Configuración del Frontend**
+
+```
+cd ../frontend
+npm install
+# Editar .env con la URL de la API backend
+npm run dev
+```
+
+**Testing**
+- backend: ```npm test```
+- frontend: ```npm run cy:open```
+
 
 ---
 
@@ -104,7 +130,78 @@ Descripción: Sistema de gestión de bases de datos relacional que almacena info
 Rol: Almacenamiento seguro y estructurado de datos.
 ### **2.3. Descripción de alto nivel del proyecto y estructura de ficheros**
 
-> Representa la estructura del proyecto y explica brevemente el propósito de las carpetas principales, así como si obedece a algún patrón o arquitectura específica.
+LA estructura basica del proyecto es la siguiente:
+
+```
+root/
+├── backend/
+│   ├── src/
+│   │   ├── controllers/
+│   │   ├── models/
+│   │   ├── db/
+│   │   │   ├── knex.js
+│   │   ├── index.js
+│   │   └── routes/
+│   ├── tests/
+│   ├── .env
+│   ├── db/
+│   │   └── migrations/
+│   │   └── seeds/
+│   |   ├── knexfile.js
+│   ├── package.json
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   │   └── layout/
+│   │   │   └── ui/
+│   │   ├── hooks/
+│   │   ├── lib/
+│   │   │   ├── constants.js
+│   │   │   └── http.js
+│   │   ├── navigation/
+│   │   |   └── Routes.jsx
+│   │   ├── screens/
+│   │   ├── App.css
+│   │   ├── App.jsx
+│   │   ├── main.jsx
+│   ├── cypress/
+│   │   ├── e2e/
+│   │   └── support/
+│   ├── .env
+│   ├── package.json
+└── README.md
+```
+
+**Propósito de las Carpetas Principales**
+**Backend**
+- src/: Contiene el código fuente del backend.
+  - controllers/: Contiene los controladores que manejan las solicitudes HTTP. Ejemplos: accountController.js, userController.js.
+  - models/: Contiene los modelos que representan las entidades de la base de datos. Ejemplos: Account.js, User.js.
+  - db/: Contiene la configuración de la base de datos.
+    - knex.js: Configuración de Knex.js para la conexión a la base de datos.
+  - index.js: Punto de entrada principal del servidor backend.
+  - routes.js: Define las rutas de la API.
+- db/: Contiene la configuración de la base de datos para migraciones y semillas.
+    - knexfile.cjs: Configuración de Knex.js para la conexión a la base de datos.
+    - migrations/: Contiene los archivos de migración para la base de datos.
+    - seeds/: Contiene los archivos de semillas para poblar la base de datos con datos iniciales.
+- tests/: Contiene las pruebas unitarias y de integración para el backend. Ejemplos: accountController.test.js, userController.test.js.
+- .env: Archivo de configuración de variables de entorno.
+
+**Frontend**
+- src/: Contiene el código fuente del frontend.
+  - components/: Contiene los componentes reutilizables de la interfaz de usuario.
+    - ui/: Componentes de la interfaz de usuario como botones, tarjetas, entradas de texto, etc.
+    - layout/: Componentes de la interfaz de usuario para manejar LA autenticación
+  - screens/: Contiene las pantallas principales de la aplicación. Ejemplos: Signin.jsx, Home.jsx.
+  - lib/: Contiene utilidades y constantes compartidas. Ejemplos: constants.js, http.js.
+  - navigation:
+    - Routes.jsx: Define las rutas de la aplicación frontend.
+  - App.jsx: Componente principal de la aplicación.
+  - main.jsx: Punto de entrada principal del frontend.
+- cypress/: Contiene las pruebas E2E (end-to-end) para el frontend.
+- .env: Archivo de configuración de variables de entorno.
+- Demas archivos de configuración
 
 ### **2.4. Infraestructura y despliegue**
 
