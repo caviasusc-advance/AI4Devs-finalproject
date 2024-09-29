@@ -269,3 +269,26 @@ Haz los cambios necesarios en @Transactions.jsx para completar el ticket @ticket
 crea en endpoint GET /system/:type en @systemConfigurationRoutes.js que retorne las columnas name, value y description de los registros donde el type coincida
 
 - - - 
+
+Vamos a crear una historia en @HU6.md . Será la autenticación del sistema. Por ahora será una autenticacion sencilla mediante cookies http. Al crear un usuario cifrar la contraseña usando bycrpt. Teniendo un endpoint `POST /login/user` que reciba tipo de identificación, numero de identificación y contraseña, validar los datos, crear un jwt que contenga user.id, añadir el token a una cookie httpOnly llamada bank-auth y devolver el contenido del token en la respuesta
+
+- - - 
+
+Crea los tickets correspondientes a la historia @HU6.md
+
+- - - 
+
+Haz los cambios necesarios en @userController.js para cumplir el ticket @ticket13-HU6.md
+
+- - - 
+
+Haz los cambios necesarios en @authRoutes.js  y @authController.js para cumplir el ticket @ticket14-HU6.md
+
+
+- - - 
+
+Haz los cambios necesarios en @auth.js para cumplir el ticket @ticket15-HU6.md
+
+- - - 
+
+Vamos a actualizar @Singin.jsx y @Login.jsx para el campo id_type usa los valores provenientes de `GET /system/documentType` usa el componente @select.jsx

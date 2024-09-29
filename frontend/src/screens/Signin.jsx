@@ -1,14 +1,15 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { InputBase } from '@/components/ui/baseInput';
-import { Label } from '@/components/ui/label';
+import { Select } from '@/components/ui/select';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { COOKIES } from '@/lib/constants';
 import { useCookies } from 'react-cookie';
 import { fetch } from '@/lib/http';
+import useSessionStorage from '@/hooks/useSessionStorage';
 
 const initialValues = {
   id_type: '',
@@ -35,15 +36,30 @@ const validationSchema = Yup.object({
 export default function Signin() {
   const [cookies, setCookie] = useCookies([COOKIES.token]);
   let navigate = useNavigate();
+  const [userInfo, setUserInfo] = useSessionStorage('userInfo', '');
+  const [documentTypes, setDocumentTypes] = useState([]);
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    const fetchDocumentTypes = async () => {
+      try {
+        const response = await fetch.get(`${import.meta.env.VITE_API_URL}/system/documentType`);
+        if (response.data.error) throw new Error(response.data.error);
+        setDocumentTypes(response.data.map(type => ({ value: type.value, name: type.name })));
+      } catch (error) {
+        console.error('Error fetching document types:', error);
+      }
+    };
+
+    fetchDocumentTypes();
+  }, []);
 
   async function onSubmit(values) {
     try {
+      values.birth_date = new Date(values.birth_date + ' 00:00:00');
       const res = await fetch.post(`${import.meta.env.VITE_API_URL}/users`, values);
       if (res.data.error) throw new Error(res.data.error);
 
-      setCookie('log-state', 'log');
+      setUserInfo(res.data);
       navigate('/');
     } catch (error) {
       window.alert(error.message);
@@ -65,12 +81,14 @@ export default function Signin() {
         <form onSubmit={handleSubmit}>
           <CardContent>
             <div className='grid w-full items-center gap-4'>
-              <InputBase
+              <Select
+                data={documentTypes}
                 value={values.id_type}
-                onChange={formik.handleChange}
+                onValueChange={(value) => {
+                  formik.setFieldValue('id_type', value);
+                }}
                 error={errors.id_type}
                 label='Tipo de Identificación'
-                labelClassName='text-left'
                 id='id_type'
                 placeholder='Tipo de Identificación'
               />
@@ -79,7 +97,6 @@ export default function Signin() {
                 onChange={formik.handleChange}
                 error={errors.id_number}
                 label='Número de Identificación'
-                labelClassName='text-left'
                 id='id_number'
                 placeholder='Número de Identificación'
               />
@@ -88,7 +105,6 @@ export default function Signin() {
                 onChange={formik.handleChange}
                 error={errors.name}
                 label='Nombre'
-                labelClassName='text-left'
                 id='name'
                 placeholder='Nombre'
               />
@@ -97,7 +113,6 @@ export default function Signin() {
                 onChange={formik.handleChange}
                 error={errors.email}
                 label='Correo Electrónico'
-                labelClassName='text-left'
                 id='email'
                 placeholder='Correo Electrónico'
               />
@@ -106,7 +121,6 @@ export default function Signin() {
                 onChange={formik.handleChange}
                 error={errors.password}
                 label='Contraseña'
-                labelClassName='text-left'
                 id='password'
                 placeholder='Contraseña'
                 type='password'
@@ -116,7 +130,6 @@ export default function Signin() {
                 onChange={formik.handleChange}
                 error={errors.phone}
                 label='Teléfono'
-                labelClassName='text-left'
                 id='phone'
                 placeholder='Teléfono'
               />
@@ -125,7 +138,6 @@ export default function Signin() {
                 onChange={formik.handleChange}
                 error={errors.address}
                 label='Dirección'
-                labelClassName='text-left'
                 id='address'
                 placeholder='Dirección'
               />
@@ -134,7 +146,6 @@ export default function Signin() {
                 onChange={formik.handleChange}
                 error={errors.birth_date}
                 label='Fecha de Nacimiento'
-                labelClassName='text-left'
                 id='birth_date'
                 placeholder='Fecha de Nacimiento'
                 type='date'

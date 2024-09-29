@@ -12,6 +12,6 @@ fetch.interceptors.request.use(
     }
 );
 
-// fetch.defaults.withCredentials = true
+fetch.defaults.withCredentials = true
 
 export { fetch }

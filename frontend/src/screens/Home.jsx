@@ -8,52 +8,43 @@ import {
   TableHead,
   TableCell,
 } from '@/components/ui/table';
-import { Select } from '@/components/ui/select';
-import { InputBase } from '@/components/ui/baseInput';
 import { Button } from '@/components/ui/button';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
+import useSessionStorage from '@/hooks/useSessionStorage';
 
-const initialValues = {
-  accountType: '',
-  initialBalance: '',
-};
-
-const validationSchema = Yup.object({
-  accountType: Yup.string().required('Requerido'),
-  initialBalance: Yup.number().required('Requerido').positive('Debe ser un número positivo'),
-});
 
 function Home() {
   const [accounts, setAccounts] = useState([]);
+  const [fetchAccounts, setFecthAccounts] = useState(true);
+  const [ userInfo ] = useSessionStorage('userInfo', '')
 
   useEffect(() => {
-    const fetchAccounts = async () => {
-      try {
-        const response = await fetch.get(`${import.meta.env.VITE_API_URL}/users/1/accounts`); // Reemplaza '1' con el ID del usuario autenticado
-        if (response.data.error) throw new Error(response.data.error);
-        const data = await response.data;
-        setAccounts(response.data);
-      } catch (error) {
-        console.error('Error fetching accounts:', error);
-      }
-    };
-
-    fetchAccounts();
-  }, []);
+    if(fetchAccounts){
+      const fetchQuery = async () => {
+        try {
+          const response = await fetch.get(`${import.meta.env.VITE_API_URL}/users/${userInfo.userid}/accounts`);
+          if (response.data.error) throw new Error(response.data.error);
+          const data = await response.data;
+          setAccounts(response.data);
+        } catch (error) {
+          console.error('Error fetching accounts:', error);
+        }
+      };
+  
+      fetchQuery();
+      setFecthAccounts(false)
+    }
+  }, [fetchAccounts]);
 
   const createAccount = async(e) =>{
     try {
       const { type } = e.target.dataset
       const response = await fetch.post(`${import.meta.env.VITE_API_URL}/accounts`, {
         account_type: type,
-        initial_balance: 0,
-        user_id: 1,
+        initial_balance: 50,
       });
       if (response.data.error) throw new Error(response.data.error);
       alert('Cuenta creada exitosamente');
-      resetForm();
-      setAccounts([...accounts, response.data]);
+      setFecthAccounts(true)
     } catch (error) {
       console.error('Error creating account:', error);
     }
@@ -61,8 +52,9 @@ function Home() {
 
   return (
     <div>
-      <h1>Bienvenido</h1>
-
+      <br/>
+      <h1>Hola, {userInfo.name}</h1>
+      <br/>
       <div>
         <h2>Crea una cuenta</h2>
         <div className='flex gap-2 justify-center'>
@@ -70,6 +62,8 @@ function Home() {
           <Button data-type="A" onClick={createAccount}>Ahorros</Button>
         </div>
       </div>
+      <br/>
+
       <h2>Mis Cuentas</h2>
       <Table>
         <TableHeader>

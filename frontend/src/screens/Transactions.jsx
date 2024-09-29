@@ -13,6 +13,7 @@ import { InputBase } from '@/components/ui/baseInput';
 import { Button } from '@/components/ui/button';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import useSessionStorage from '@/hooks/useSessionStorage';
 
 const initialValues = {
   sourceAccount: '',
@@ -31,13 +32,13 @@ const validationSchema = Yup.object({
 function Home() {
   const [accounts, setAccounts] = useState([]);
   const [accountsData, setAccountsData] = useState([]);
+  const [userInfo] = useSessionStorage('userInfo', '')
 
   useEffect(() => {
     const fetchAccounts = async () => {
       try {
-        const response = await fetch.get(`${import.meta.env.VITE_API_URL}/users/1/accounts`); // Reemplaza '1' con el ID del usuario autenticado
+        const response = await fetch.get(`${import.meta.env.VITE_API_URL}/users/${userInfo.userid}/accounts`);
         if (response.data.error) throw new Error(response.data.error);
-        const data = await response.data;
         setAccounts(response.data);
         setAccountsData(response.data.map(account => ({ value: account.id, name: account.account_number })));
         formik.setFieldValue('sourceAccount', response.data[0].id)
@@ -68,79 +69,60 @@ function Home() {
       }
     },
   });
-console.log(formik.errors, formik.values)
+  console.log(formik.errors, formik.values)
   return (
     <div>
       <h1>Transacciones</h1>
       <h2>Mis Cuentas</h2>
-      {/* <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Número de Cuenta</TableHead>
-            <TableHead>Tipo de Cuenta</TableHead>
-            <TableHead>Saldo</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {accounts.map((account) => (
-            <TableRow key={account.account_number}>
-              <TableCell>{account.account_number}</TableCell>
-              <TableCell>{account.account_type}</TableCell>
-              <TableCell>{account.balance}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table> */}
       {accounts.length > 0 && (
         <>
           <div className='flex flex-col gap-4'>
-          <h2>Realizar transacción</h2>
-          <form className='flex flex-col gap-4' onSubmit={formik.handleSubmit}>
-          <h2>Crear Transacción</h2>
-          <Select
-            id="sourceAccount"
-            name="sourceAccount"
-            label="Cuenta de Origen"
-            data={accountsData}
-            value={formik.values.sourceAccount}
-            onValueChange={(value) => {
-              console.log(value)
-              formik.setFieldValue('sourceAccount',value);
-            }}
-            error={formik.errors.sourceAccount}
-          />
-          <InputBase
-            id="destinationAccount"
-            name="destinationAccount"
-            label="Cuenta de Destino"
-            type="text"
-            value={formik.values.destinationAccount}
-            onChange={formik.handleChange}
-            error={formik.errors.destinationAccount}
-          />
-          <InputBase
-            id="amount"
-            name="amount"
-            label="Monto"
-            type="number"
-            value={formik.values.amount}
-            onChange={formik.handleChange}
-            error={formik.errors.amount}
-          />
-          <InputBase
-            id="description"
-            name="description"
-            label="Descripción"
-            type="text"
-            value={formik.values.description}
-            onChange={formik.handleChange}
-            error={formik.errors.description}
-          />
-          <Button type="submit">Crear</Button>
-        </form>
+            <h2>Realizar transacción</h2>
+            <form className='flex flex-col gap-4' onSubmit={formik.handleSubmit}>
+              <h2>Crear Transacción</h2>
+              <Select
+                id="sourceAccount"
+                name="sourceAccount"
+                label="Cuenta de Origen"
+                data={accountsData}
+                value={formik.values.sourceAccount}
+                onValueChange={(value) => {
+                  formik.setFieldValue('sourceAccount', value);
+                }}
+                error={formik.errors.sourceAccount}
+              />
+              <InputBase
+                id="destinationAccount"
+                name="destinationAccount"
+                label="Cuenta de Destino"
+                type="text"
+                value={formik.values.destinationAccount}
+                onChange={formik.handleChange}
+                error={formik.errors.destinationAccount}
+              />
+              <InputBase
+                id="amount"
+                name="amount"
+                label="Monto"
+                type="number"
+                value={formik.values.amount}
+                onChange={formik.handleChange}
+                error={formik.errors.amount}
+              />
+              <InputBase
+                id="description"
+                name="description"
+                label="Descripción"
+                type="text"
+                value={formik.values.description}
+                onChange={formik.handleChange}
+                error={formik.errors.description}
+              />
+              <Button type="submit">Crear</Button>
+            </form>
           </div>
         </>
-)}
+      )}
     </div>
   );
 }

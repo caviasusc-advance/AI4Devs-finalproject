@@ -1,12 +1,20 @@
 require('dotenv').config();
 const express = require("express");
+const cookieParser = require('cookie-parser')
+
+const authRoutes = require("./routes/authRoutes");
 const accountRoutes = require("./routes/accountRoutes");
 const userRoutes = require("./routes/userRoutes");
 const transactionRoutes = require("./routes/transactionRoutes");
 const systemConfigurationRoutes = require("./routes/systemConfigurationRoutes");
 
+const auth = require("./middlewares/auth");
+
+
 const port = process.env.PORT || 8000;
 const app = express();
+
+app.use(cookieParser())
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -26,10 +34,13 @@ app.get("/", (req, res) => {
   res.status(200).send({ msg: "Server is up and running" });
 });
 
+app.use(authRoutes)
+app.use(systemConfigurationRoutes)
+
+app.use(auth)
 app.use(accountRoutes)
 app.use(userRoutes)
 app.use(transactionRoutes)
-app.use(systemConfigurationRoutes)
 
 if (process.env.NODE_ENV !== 'test') {
   app.listen(port, () => {

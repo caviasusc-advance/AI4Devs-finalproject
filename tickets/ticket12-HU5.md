@@ -1,4 +1,4 @@
-### **Ticket 11: Escribir pruebas unitarias y de integración para el endpoint POST /transactions (HU5)**
+### **Ticket 12: Escribir pruebas unitarias y de integración para el endpoint POST /transactions (HU5)**
 
 **Descripción:**
 Desarrollar pruebas unitarias y de integración para el endpoint `POST /transactions` en la API. Estas pruebas deben asegurar que el endpoint funciona correctamente y maneja adecuadamente los casos de éxito y error.

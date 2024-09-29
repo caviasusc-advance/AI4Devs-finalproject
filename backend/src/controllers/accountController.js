@@ -8,7 +8,10 @@ function generateAccountNumber() {
 
 exports.createAccount = async (req, res) => {
     try {
-        const accountData = createAccountDTO(req.body);
+        const accountData = createAccountDTO({
+            ...req.body,
+            user_id: res.locals.userid
+        });
 
         let accountNumber;
         let existingAccount;
