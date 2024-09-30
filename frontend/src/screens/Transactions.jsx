@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import useSessionStorage from '@/hooks/useSessionStorage';
+import { formatDate, toCurrency } from '@/lib/strings';
 
 const initialValues = {
   sourceAccount: '',
@@ -29,10 +30,13 @@ const validationSchema = Yup.object({
   description: Yup.string(),
 });
 
-function Home() {
+function Transactions() {
   const [accounts, setAccounts] = useState([]);
   const [accountsData, setAccountsData] = useState([]);
-  const [userInfo] = useSessionStorage('userInfo', '')
+  const [transactions, setTransactions] = useState([]);
+  const [selectedAccount, setSelectedAccount] = useState('');
+  const [fetchTransactions, setFetchTransactions] = useState(true);
+  const [userInfo] = useSessionStorage('userInfo', '');
 
   useEffect(() => {
     const fetchAccounts = async () => {
@@ -41,7 +45,8 @@ function Home() {
         if (response.data.error) throw new Error(response.data.error);
         setAccounts(response.data);
         setAccountsData(response.data.map(account => ({ value: account.id, name: account.account_number })));
-        formik.setFieldValue('sourceAccount', response.data[0].id)
+        formik.setFieldValue('sourceAccount', response.data[0].id);
+        setSelectedAccount(response.data[0].id);
       } catch (error) {
         console.error('Error fetching accounts:', error);
       }
@@ -49,6 +54,23 @@ function Home() {
 
     fetchAccounts();
   }, []);
+
+  useEffect(() => {
+    if (selectedAccount && fetchTransactions) {
+    const transactionQuery = async () => {
+        try {
+          const response = await fetch.get(`${import.meta.env.VITE_API_URL}/accounts/${selectedAccount}/transactions`);
+          if (response.data.error) throw new Error(response.data.error);
+          setTransactions(response.data);
+        } catch (error) {
+          console.error('Error fetching transactions:', error);
+        }
+      }
+      
+      transactionQuery();
+      setFetchTransactions(false);
+    };
+  }, [selectedAccount, fetchTransactions]);
 
   const formik = useFormik({
     initialValues,
@@ -64,22 +86,21 @@ function Home() {
         if (response.data.error) throw new Error(response.data.error);
         alert('Transacción creada exitosamente');
         resetForm();
+        setFetchTransactions(true);
       } catch (error) {
         console.error('Error creating transaction:', error);
       }
     },
   });
-  console.log(formik.errors, formik.values)
+
   return (
     <div>
       <h1>Transacciones</h1>
-      <h2>Mis Cuentas</h2>
       {accounts.length > 0 && (
         <>
           <div className='flex flex-col gap-4'>
             <h2>Realizar transacción</h2>
             <form className='flex flex-col gap-4' onSubmit={formik.handleSubmit}>
-              <h2>Crear Transacción</h2>
               <Select
                 id="sourceAccount"
                 name="sourceAccount"
@@ -121,10 +142,44 @@ function Home() {
               <Button type="submit">Crear</Button>
             </form>
           </div>
+          <br/>
+          <br/>
+          <div className='flex flex-col gap-4'>
+            <h2>Historial de Transacciones</h2>
+            <Select
+              id="selectedAccount"
+              name="selectedAccount"
+              label="Seleccionar Cuenta"
+              data={accountsData}
+              value={selectedAccount}
+              onValueChange={(value) => {
+                setSelectedAccount(value);
+                setFetchTransactions(true);
+              }}
+            />
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Fecha</TableHead>
+                  <TableHead>Descripción</TableHead>
+                  <TableHead>Monto</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {transactions.map((transaction, index) => (
+                  <TableRow key={index}>
+                    <TableCell className={'text-left'}>{formatDate(transaction.date)}</TableCell>
+                    <TableCell className={'text-left'}>{transaction.description}</TableCell>
+                    <TableCell className={'text-right'}>{toCurrency(transaction.amount)}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </>
       )}
     </div>
   );
 }
 
-export default Home;
+export default Transactions;

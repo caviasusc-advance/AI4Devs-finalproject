@@ -3,18 +3,20 @@ const jwt = require('jsonwebtoken');
 
 const authMiddleware = async (req, res, next) => {
   try {
-    const authToken = req.cookies['bank-auth'];
-    if (!authToken) throw new Error('token needed')
-          
-
-      const {...verified } = jwt.verify(authToken, process.env.TOKEN_SECRET);
-
-      res.locals = {
-        ...res.locals,
-        ...verified,
-      };
-
-    next();
+    if(req.method == 'OPTIONS')
+      next();
+    else{
+      const authToken = req.cookies['bank-auth'];
+      if (!authToken) throw new Error('token needed')
+        const {...verified } = jwt.verify(authToken, process.env.TOKEN_SECRET);
+  
+        res.locals = {
+          ...res.locals,
+          ...verified,
+        };
+  
+      next();
+    }
   } catch (error) {
     let expired;
     if (error.message == 'jwt expired') {

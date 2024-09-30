@@ -1,89 +1,96 @@
-erDiagram
-    USER {
-        int id PK
-        string id_type
-        string id_number
-        string name
-        string email unique
-        string password
-        string phone
-        string address
-        date birth_date
-        timestamp registration_date
-        string status
-        timestamp created
-        string created_by
-        timestamp updated
-        string updated_by
-    }
+@startuml ERD_SparkBank
 
-    ACCOUNT {
-        int id PK
-        string account_number unique
-        string account_type
-        float balance
-        timestamp creation_date
-        string status
-        int user_id FK
-        timestamp created
-        string created_by
-        timestamp updated
-        string updated_by
-    }
+entity "USER" as usuario {
+  *id serial [PK]
+  id_type varchar(255)
+  id_number varchar(255) [unique]
+  name varchar(255)
+  email varchar(255) [unique]
+  password varchar(255)
+  phone varchar(255)
+  address varchar(255)
+  birth_date date
+  registration_date timestamp
+  status varchar(255)
+  created timestamp
+  created_by varchar(255)
+  updated timestamp
+  updated_by varchar(255)
+}
 
-    TRANSACTION {
-        int id PK
-        timestamp date
-        string type
-        float amount
-        string description
-        int source_account_id FK
-        int destination_account_id FK nullable
-        string status
-        timestamp created
-        string created_by
-        timestamp updated
-        string updated_by
-    }
+entity "ACCOUNT" as cuenta {
+  *id serial [PK]
+  account_number varchar(255) [unique]
+  account_type varchar(255)
+  balance float
+  creation_date timestamp
+  status varchar(255)
+  user_id int [FK]
+  created timestamp
+  created_by varchar(255)
+  updated timestamp
+  updated_by varchar(255)
+}
 
-    NOTIFICATION {
-        int id PK
-        string type
-        string message
-        timestamp send_date
-        int user_id FK
-        string status
-        timestamp created
-        string created_by
-        timestamp updated
-        string updated_by
-    }
+entity "TRANSACTION" as transaccion {
+  *id serial [PK]
+  date timestamp
+  amount float
+  description varchar(255)
+  source_account_id int [FK]
+  source_account_number varchar(255)
+  destination_account_id int [FK] <<nullable>>
+  destination_account_number varchar(255)
+  status varchar(255)
+  created timestamp
+  created_by varchar(255)
+  updated timestamp
+  updated_by varchar(255)
+}
 
-    SESSION {
-        int id PK
-        string token unique
-        timestamp creation_date
-        timestamp expiration_date
-        int user_id FK
-        boolean terminated_by_user
-        timestamp created
-        string created_by
-        timestamp updated
-        string updated_by
-    }
+entity "NOTIFICATION" as notificacion {
+  *id serial [PK]
+  type varchar(255)
+  message varchar(255)
+  send_date timestamp
+  user_id int [FK]
+  status varchar(255)
+  created timestamp
+  created_by varchar(255)
+  updated timestamp
+  updated_by varchar(255)
+}
 
-    SYSTEM_CONFIGURATION {
-        int id PK
-        string name
-        string value
-        string description
-        timestamp created
-        string created_by
-        timestamp updated
-        string updated_by
-    }
+entity "SESSION" as sesion {
+  *id serial [PK]
+  token varchar(255) [unique]
+  creation_date timestamp
+  expiration_date timestamp
+  user_id int [FK]
+  terminated_by_user boolean
+  created timestamp
+  created_by varchar(255)
+  updated timestamp
+  updated_by varchar(255)
+}
 
-    USER ||--o{ ACCOUNT : "has"
-    ACCOUNT ||--o{ TRANSACTION : "contains"
-    USER ||--o{ NOTIFICATION : "receives"
-    USER ||--o{ SESSION : "creates"
+entity "SYSTEM_CONFIGURATION" as configuracion_sistema {
+  *id serial [PK]
+  type varchar(255)
+  name varchar(255)
+  value varchar(255)
+  description varchar(255)
+  created timestamp
+  created_by varchar(255)
+  updated timestamp
+  updated_by varchar(255)
+  UNIQUE (type, value)
+  UNIQUE (type, name)
+}
+
+usuario ||--o{ cuenta : "has"
+cuenta ||--o{ transaccion : "contains"
+usuario ||--o{ notificacion : "recieve"
+usuario ||--o{ sesion : "create"
+
+@enduml

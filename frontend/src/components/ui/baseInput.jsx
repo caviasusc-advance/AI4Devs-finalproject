@@ -5,7 +5,7 @@ import { Label } from '@/components/ui/label';
 
 const InputBase = React.forwardRef(({ className, rootClassName, type, label, labelClassName, error, id, ...props }, ref) => {
   return (
-    <fieldset className={cn(rootClassName, 'flex flex-col')}>
+    <fieldset className={cn(rootClassName, 'flex flex-col relative')}>
       {!!label && (
         <Label className={cn('mb-2 text-left', labelClassName)} htmlFor={id}>
           {label}
@@ -21,7 +21,7 @@ const InputBase = React.forwardRef(({ className, rootClassName, type, label, lab
         ref={ref}
         {...props}
       />
-      {!!error && <p id={id + '-error'} className='text-right text-xs text-red-600 font-normal'>{error}</p>}
+      {!!error && <p id={id + '-error'} className='absolute right-0 bottom-[-1.1rem] text-right text-xs text-red-600 font-normal'>{error}</p>}
     </fieldset>
   );
 });

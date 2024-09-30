@@ -1,5 +1,8 @@
-const formatter = new Intl.NumberFormat(undefined, {
+const formatter = new Intl.NumberFormat('en-US', {
     minimumFractionDigits: 0,
+    style: 'currency',
+    currency: 'USD',
+    currencyDisplay: 'narrowSymbol'
   });
   
   export function stringToNumber(currencyStr) {
@@ -11,13 +14,15 @@ const formatter = new Intl.NumberFormat(undefined, {
   }
   
   export function toCurrency(string) {
-    return isNaN(string) ? string : '$' + formatter.format(string);
+    return isNaN(string) ? string : formatter.format(string);
   }
-  
-  export function formatAccountNumber(numStr) {
-    return numStr.replace(/\D/g, '').replace(/\B(?=(\d{4})+(?!\d))/g, ' ')
-  }
-  
-  export function formatPhoneNumber(numStr) {
-    return numStr.replace(/\D/g, '').replace(/\B(?=((\d{4})|(\d{7}))(?!\d))/g, ' ')
-  }
+
+const formatterLocal = new Intl.DateTimeFormat("es-CO", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+
+export function formatDate (dateString){
+  return formatterLocal.format(new Date(dateString))
+};

@@ -6,7 +6,6 @@ exports.createTransaction = async (req, res) => {
     try {
         const transactionData = createTransactionDTO(req.body);
 
-        // Verificar fondos suficientes si la cuenta de origen es interna
         if (transactionData.source_account_id) {
             const sourceAccount = await Account.findById(transactionData.source_account_id);
             if (sourceAccount.balance < transactionData.amount) {
@@ -16,7 +15,6 @@ exports.createTransaction = async (req, res) => {
             
         }
 
-        // Verificar si el número de cuenta de destino corresponde a una cuenta interna
         if (transactionData.destination_account_number) {
             const destinationAccount = await Account.findByAccountNumber(transactionData.destination_account_number);
             if (destinationAccount) 
@@ -35,6 +33,16 @@ exports.createTransaction = async (req, res) => {
         }
 
         res.status(201).send(newTransaction);
+    } catch (error) {
+        res.status(400).send({ error: error.message });
+    }
+};
+
+exports.getTransactionsByAccountId = async (req, res) => {
+    try {
+        const accountId = req.params.accountId;
+        const transactions = await Transaction.findByAccountId(accountId);
+        res.status(200).send(transactions);
     } catch (error) {
         res.status(400).send({ error: error.message });
     }

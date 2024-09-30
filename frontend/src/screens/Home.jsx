@@ -9,6 +9,7 @@ import {
   TableCell,
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
+import { toCurrency } from '@/lib/strings';
 import useSessionStorage from '@/hooks/useSessionStorage';
 
 
@@ -78,7 +79,7 @@ function Home() {
             <TableRow key={account.account_number}>
               <TableCell>{account.account_number}</TableCell>
               <TableCell>{account.account_type}</TableCell>
-              <TableCell>{account.balance}</TableCell>
+              <TableCell>{toCurrency(account.balance)}</TableCell>
             </TableRow>
           ))}
         </TableBody>

@@ -38,7 +38,7 @@ export default function SignedLayout() {
       valid = false;
     }
     if (!valid) {
-      navigate('/signin');
+      navigate('/login');
     }
   });
 

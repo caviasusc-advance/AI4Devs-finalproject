@@ -22,7 +22,7 @@ Cesar Augusto Viasus Cifuentes
 Spark Bank
 
 ### **0.3. Descripción breve del proyecto:**
-
+SparkBank es un neobanco digital que ofrece soluciones financieras innovadoras y accesibles para usuarios que buscan gestionar sus finanzas de manera eficiente y segura. A través de su plataforma intuitiva y servicios automatizados, SparkBank permite a sus clientes realizar transacciones, administrar cuentas bancarias, recibir notificaciones en tiempo real y disfrutar de una experiencia bancaria sin las limitaciones tradicionales. El enfoque principal de SparkBank es brindar accesibilidad, velocidad y transparencia, empoderando a sus usuarios con herramientas financieras modernas.
 
 
 ### **0.4. URL del proyecto:**
@@ -205,11 +205,19 @@ root/
 
 ### **2.4. Infraestructura y despliegue**
 
-> Detalla la infraestructura del proyecto, incluyendo un diagrama en el formato que creas conveniente, y explica el proceso de despliegue que se sigue
+El código fuente se encuentra en un repositorio de github. El repositorio se encuentra conectado a un entorno de [Render](https://render.com/). Alli se aloja en sitio estatico construido en React, un servicio web hecho en NodeJS con Express y una base de datos PostgreSQL
+![Modelo Entidad-Relación](assets/infra.png)
+
 
 ### **2.5. Seguridad**
 
-> Enumera y describe las prácticas de seguridad principales que se han implementado en el proyecto, añadiendo ejemplos si procede
+En el proyecto SparkBank, se han implementado varias prácticas de seguridad importantes. A continuación, se describen las principales prácticas de seguridad:
+1. **Hashing de Contraseñas**
+En el método logInUser, se utiliza la biblioteca bcrypt para comparar la contraseña proporcionada por el usuario con la contraseña almacenada en la base de datos. Esto asegura que las contraseñas no se almacenen en texto plano, sino que se almacenen como hashes seguros.
+2. **Generación de Tokens JWT**
+Se utiliza jsonwebtoken para generar tokens JWT (JSON Web Tokens) que contienen información del usuario. Estos tokens se firman con una clave secreta (process.env.TOKEN_SECRET) y tienen una expiración de 1 hora. Esto ayuda a asegurar que las sesiones de usuario sean temporales y que los tokens no puedan ser fácilmente falsificados.
+3. **Cookies HTTPOnly**
+Los tokens JWT generados se almacenan en cookies con la opción httpOnly habilitada. Esto significa que las cookies no son accesibles a través de JavaScript en el navegador, lo que ayuda a proteger contra ataques de Cross-Site Scripting (XSS).
 
 ### **2.6. Tests**
 **Test**: should create a new account successfully
@@ -244,26 +252,30 @@ Este test verifica que se retorna un error si la generación del número de cuen
 
 - Descripción: La entidad "Usuario" representa a los clientes de SparkBank. Contiene la información personal necesaria para identificar y autenticar al usuario, como su nombre, dirección, correo electrónico, teléfono, tipo y número de identificación, y otros detalles importantes.
 - Atributos Clave:
-  - id: Identificador único del usuario.
-  - tipo_identificacion: Tipo de documento de identificación (e.g., DNI, pasaporte).
-  - numero_identificacion: Número del documento de identificación.
-  - correo_electronico: Email del usuario, usado para autenticación y notificaciones.
-  - contraseña: Contraseña encriptada del usuario.
-  - fecha_nacimiento: Fecha de nacimiento del usuario.
-  - fecha_registro: Fecha en que el usuario se registró en SparkBank.
-  - estado: Estado de la cuenta del usuario (e.g., activo, inactivo).
+  - id: Identificador único del usuario (PK).
+  - id_type: Tipo de identificación del usuario.
+  - id_number: Número de identificación del usuario (único).
+  - name: Nombre del usuario.
+  - email: Correo electrónico del usuario (único).
+  - password: Contraseña cifrada del usuario.
+  - phone: Número de teléfono del usuario.
+  - address: Dirección del usuario.
+  - birth_date: Fecha de nacimiento del usuario.
+  - registration_date: Fecha de registro del usuario.
+  - status: Estado del usuario.
 
 **Cuenta**
 
 - Descripción: La entidad "Cuenta" representa las cuentas bancarias de los usuarios. Cada cuenta está asociada a un único usuario y contiene información financiera relevante como el tipo de cuenta, saldo, y su estado.
 - Atributos Clave:
-  - id: Identificador único de la cuenta.
-  - numero_cuenta: Número único de la cuenta bancaria.
-  - tipo_cuenta: Tipo de cuenta (e.g., ahorro, corriente).
-  - saldo: Saldo actual en la cuenta.
-  - fecha_creacion: Fecha de creación de la cuenta.
-  - estado: Estado de la cuenta (e.g., activa, bloqueada).
-  - usuario_id: Identificador del usuario al que pertenece la cuenta.
+  - id: Identificador único de la cuenta (PK).
+  - account_number: Número de cuenta (único).
+  - account_type: Tipo de cuenta.
+  - balance: Saldo de la cuenta.
+  - creation_date: Fecha de creación de la cuenta.
+  - status: Estado de la cuenta.
+  - user_id: Identificador del usuario propietario de la cuenta (FK).
+
 - Relación:
 Un usuario puede tener una o más cuentas (relación uno a muchos).
 
@@ -271,26 +283,30 @@ Un usuario puede tener una o más cuentas (relación uno a muchos).
 
 - Descripción: La entidad "Transacción" registra todas las operaciones financieras realizadas en las cuentas de los usuarios, como depósitos, retiros y transferencias. Cada transacción está vinculada a una cuenta de origen y, opcionalmente, a una cuenta de destino.
 - Atributos Clave:
-  - id: Identificador único de la transacción.
-  - fecha: Fecha y hora en que se realizó la transacción.
-  - tipo: Tipo de transacción (e.g., depósito, retiro, transferencia).
-  - monto: Monto de dinero involucrado en la transacción.
-  - descripcion: Descripción adicional de la transacción.
-  - cuenta_origen_id: Identificador de la cuenta de origen.
-  - cuenta_destino_id: Identificador de la cuenta de destino (si aplica).
-  - estado: Estado de la transacción (e.g., completada, pendiente).
+  - id: Identificador único de la transacción (PK).
+  - date: Fecha de la transacción.
+  - amount: Monto de la transacción.
+  - description: Descripción de la transacción.
+  - source_account_id: Identificador de la cuenta de origen.
+  - source_account_number: Número de cuenta de origen.
+  - destination_account_id: Identificador de la cuenta de destino.
+  - destination_account_number: Número de cuenta de destino.
+  - status: Estado de la transacción.
+
 - Relación:
 Una cuenta puede tener múltiples transacciones (relación uno a muchos).
-Notificación
+
+**Notificación**
 
 - Descripción: La entidad "Notificación" almacena mensajes enviados a los usuarios, como alertas de transacciones, recordatorios o promociones. Estas notificaciones pueden ser enviadas por diversos canales, como SMS o correo electrónico.
 - Atributos Clave:
-  - id: Identificador único de la notificación.
-  - tipo: Tipo de notificación (e.g., alerta de transacción, notificación de seguridad).
-  - mensaje: Contenido del mensaje de la notificación.
-  - fecha_envio: Fecha y hora en que se envió la notificación.
-  - usuario_id: Identificador del usuario al que se envió la notificación.
-  - estado: Estado de la notificación (e.g., enviada, leída).
+  - id: Identificador único de la notificación (PK).
+  - type: Tipo de notificación.
+  - message: Mensaje de la notificación.
+  - send_date: Fecha de envío de la notificación.
+  - user_id: Identificador del usuario que recibe la notificación (FK).
+  - status: Estado de la notificación.
+
 - Relación:
 Un usuario puede recibir múltiples notificaciones (relación uno a muchos).
 
@@ -298,22 +314,24 @@ Un usuario puede recibir múltiples notificaciones (relación uno a muchos).
 
 - Descripción: La entidad "Sesión" registra las sesiones de usuario activas y finalizadas. Esta entidad es crucial para gestionar la autenticación, seguimiento de actividad y asegurar que las sesiones son válidas.
 - Atributos Clave:
-  - id: Identificador único de la sesión.
-  - token: Token único que identifica la sesión.
-  - fecha_creacion: Fecha y hora de creación de la sesión.
-  - fecha_expiracion: Fecha y hora en que la sesión expira.
-  - usuario_id: Identificador del usuario al que pertenece la sesión.
-  - terminada_por_usuario: Indica si la sesión fue terminada por el usuario.
+  - id: Identificador único de la sesión (PK).
+  - token: Token de la sesión (único).
+  - creation_date: Fecha de creación de la sesión.
+  - expiration_date: Fecha de expiración de la sesión.
+  - user_id: Identificador del usuario de la sesión (FK).
+  - terminated_by_user: Indica si la sesión fue terminada por el usuario.
+
 - Relación:
 Un usuario puede tener múltiples sesiones activas o finalizadas (relación uno a muchos).
   
 **Configuración del Sistema**
 - Descripción: La entidad "Configuración del Sistema" almacena parámetros y valores de configuración globales del sistema. Estos parámetros pueden ser utilizados para personalizar el comportamiento del sistema o ajustar valores según necesidades administrativas.
 - Atributos Clave:
-  - id: Identificador único de la configuración.
-  - nombre: Nombre de la configuración.
-  - valor: Valor asociado a la configuración.
-  - descripcion: Descripción de lo que hace la configuración.
+  - id: Identificador único de la configuración (PK).
+  - type: Tipo de configuración.
+  - name: Nombre de la configuración.
+  - value: Valor de la configuración.
+  - description: Descripción de la configuración.
 
 #### Relaciones entre Entidades
 
@@ -337,20 +355,14 @@ Aunque no hay una relación directa entre el usuario y la configuración del sis
 ## 4. Especificación de la API
 
 ```
-openapi: 3.0.3
+openapi: 3.0.0
 info:
   title: SparkBank API
-  description: API para la gestión de usuarios, cuentas y transacciones de SparkBank.
   version: 1.0.0
-servers:
-  - url: https://api.sparkbank.com/v1
-    description: Servidor principal de SparkBank API
-
 paths:
   /users:
     post:
       summary: Crear un nuevo usuario
-      description: Registra un nuevo usuario en el sistema.
       requestBody:
         required: true
         content:
@@ -358,37 +370,32 @@ paths:
             schema:
               type: object
               properties:
-                tipo_identificacion:
+                id_type:
                   type: string
-                  example: DNI
-                numero_identificacion:
+                id_number:
                   type: string
-                  example: '12345678A'
-                nombre:
+                name:
                   type: string
-                  example: Juan Pérez
-                correo_electronico:
+                email:
                   type: string
-                  example: juan.perez@example.com
-                contraseña:
+                password:
                   type: string
-                  example: P@ssw0rd!
-                telefono:
+                phone:
                   type: string
-                  example: '+1234567890'
-                direccion:
+                address:
                   type: string
-                  example: Calle Falsa 123
-                fecha_nacimiento:
+                birth_date:
                   type: string
                   format: date
-                  example: '1980-01-01'
               required:
-                - tipo_identificacion
-                - numero_identificacion
-                - nombre
-                - correo_electronico
-                - contraseña
+                - id_type
+                - id_number
+                - name
+                - email
+                - password
+                - phone
+                - address
+                - birth_date
       responses:
         '201':
           description: Usuario creado exitosamente
@@ -397,38 +404,56 @@ paths:
               schema:
                 type: object
                 properties:
-                  id:
-                    type: integer
-                    example: 1
-                  tipo_identificacion:
+                  token:
                     type: string
-                    example: DNI
-                  numero_identificacion:
-                    type: string
-                    example: '12345678A'
-                  nombre:
-                    type: string
-                    example: Juan Pérez
-                  correo_electronico:
-                    type: string
-                    example: juan.perez@example.com
-                  telefono:
-                    type: string
-                    example: '+1234567890'
-                  direccion:
-                    type: string
-                    example: Calle Falsa 123
-                  fecha_nacimiento:
-                    type: string
-                    format: date
-                    example: '1980-01-01'
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      id_type:
+                        type: string
+                      id_number:
+                        type: string
+                      name:
+                        type: string
+                      email:
+                        type: string
+                      phone:
+                        type: string
+                      address:
+                        type: string
+                      birth_date:
+                        type: string
+                        format: date
+                      registration_date:
+                        type: string
+                        format: date-time
+                      status:
+                        type: string
+                      created:
+                        type: string
+                        format: date-time
+                      created_by:
+                        type: string
+                      updated:
+                        type: string
+                        format: date-time
+                      updated_by:
+                        type: string
         '400':
-          description: Solicitud inválida
+          description: Error en la solicitud
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
 
   /accounts:
     post:
-      summary: Crear una nueva cuenta
-      description: Crea una nueva cuenta bancaria para un usuario.
+      summary: Crear una nueva cuenta bancaria
       requestBody:
         required: true
         content:
@@ -436,24 +461,13 @@ paths:
             schema:
               type: object
               properties:
-                numero_cuenta:
+                account_type:
                   type: string
-                  example: 'ES1234567890123456789012'
-                tipo_cuenta:
-                  type: string
-                  example: ahorro
-                saldo:
+                initial_balance:
                   type: number
-                  format: float
-                  example: 1000.00
-                usuario_id:
-                  type: integer
-                  example: 1
               required:
-                - numero_cuenta
-                - tipo_cuenta
-                - saldo
-                - usuario_id
+                - account_type
+                - initial_balance
       responses:
         '201':
           description: Cuenta creada exitosamente
@@ -463,35 +477,44 @@ paths:
                 type: object
                 properties:
                   id:
-                    type: integer
-                    example: 1
-                  numero_cuenta:
                     type: string
-                    example: 'ES1234567890123456789012'
-                  tipo_cuenta:
+                  account_number:
                     type: string
-                    example: ahorro
-                  saldo:
+                  account_type:
+                    type: string
+                  balance:
                     type: number
-                    format: float
-                    example: 1000.00
-                  usuario_id:
-                    type: integer
-                    example: 1
+                  user_id:
+                    type: string
+                  created:
+                    type: string
+                    format: date-time
+                  created_by:
+                    type: string
+                  updated:
+                    type: string
+                    format: date-time
+                  updated_by:
+                    type: string
         '400':
-          description: Solicitud inválida
+          description: Error en la solicitud
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
 
   /users/{id}/accounts:
     get:
-      summary: Obtener todas las cuentas de un usuario
-      description: Obtiene todas las cuentas asociadas a un usuario específico.
+      summary: Obtener cuentas de un usuario
       parameters:
-        - name: id
-          in: path
+        - in: path
+          name: id
           required: true
-          description: ID del usuario para el cual se obtienen las cuentas.
           schema:
-            type: integer
+            type: string
       responses:
         '200':
           description: Lista de cuentas del usuario
@@ -503,23 +526,213 @@ paths:
                   type: object
                   properties:
                     id:
-                      type: integer
-                      example: 1
-                    numero_cuenta:
                       type: string
-                      example: 'ES1234567890123456789012'
-                    tipo_cuenta:
+                    account_number:
                       type: string
-                      example: ahorro
-                    saldo:
+                    account_type:
+                      type: string
+                    balance:
                       type: number
-                      format: float
-                      example: 1000.00
-                    usuario_id:
-                      type: integer
-                      example: 1
-        '404':
-          description: Usuario no encontrado
+                    created:
+                      type: string
+                      format: date-time
+                    status:
+                      type: string
+        '400':
+          description: Error en la solicitud
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+  /login/user:
+    post:
+      summary: Iniciar sesión de usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id_type:
+                  type: string
+                id_number:
+                  type: string
+                password:
+                  type: string
+              required:
+                - id_type
+                - id_number
+                - password
+      responses:
+        '201':
+          description: Inicio de sesión exitoso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  userid:
+                    type: string
+                  name:
+                    type: string
+        '400':
+          description: Error en la solicitud
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+  /logout/user:
+    post:
+      summary: Cerrar sesión de usuario
+      responses:
+        '201':
+          description: Cierre de sesión exitoso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  session:
+                    type: boolean
+        '400':
+          description: Error en la solicitud
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+  /system/{type}:
+    get:
+      summary: Obtener configuraciones del sistema
+      parameters:
+        - in: path
+          name: type
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Configuraciones del sistema
+        '400':
+          description: Error en la solicitud
+
+  /transactions:
+    post:
+      summary: Crear una nueva transacción
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                source_account_id:
+                  type: string
+                source_account_number:
+                  type: string
+                destination_account_number:
+                  type: string
+                amount:
+                  type: number
+                description:
+                  type: string
+              required:
+                - source_account_id
+                - destination_account_number
+                - amount
+      responses:
+        '201':
+          description: Transacción creada exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  source_account_id:
+                    type: string
+                  source_account_number:
+                    type: string
+                  destination_account_id:
+                    type: string
+                  destination_account_number:
+                    type: string
+                  amount:
+                    type: number
+                  description:
+                    type: string
+                  date:
+                    type: string
+                    format: date-time
+        '400':
+          description: Error en la solicitud
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+  /accounts/{accountId}/transactions:
+    get:
+      summary: Obtener historial de transacciones de una cuenta
+      parameters:
+        - in: path
+          name: accountId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Historial de transacciones de la cuenta
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    source_account_id:
+                      type: string
+                    source_account_number:
+                      type: string
+                    destination_account_id:
+                      type: string
+                    destination_account_number:
+                      type: string
+                    amount:
+                      type: number
+                    description:
+                      type: string
+                    date:
+                      type: string
+                      format: date-time
+        '400':
+          description: Error en la solicitud
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
 ```
 
 ---

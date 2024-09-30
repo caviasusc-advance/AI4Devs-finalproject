@@ -292,3 +292,19 @@ Haz los cambios necesarios en @auth.js para cumplir el ticket @ticket15-HU6.md
 - - - 
 
 Vamos a actualizar @Singin.jsx y @Login.jsx para el campo id_type usa los valores provenientes de `GET /system/documentType` usa el componente @select.jsx
+
+- - - 
+
+Vamos a crear una historia en @HU7.md . Sera el historial de transacciones en la ventana `/transaction` habra un campo de seleccion para elegir la cuenta a ver y debajo una tabla que muestre fecha, descripcion y monto. si la cuenta es el origen se mostrara el monto como negativo y si es la cuenta destino se mostrar como positivo
+ 
+- - - 
+
+Crea las funciones correspondientes en los archivos @transactionController.js y @Transaction.js necesarias para completar el ticket @ticket17-HU7.md
+
+- - - 
+
+Haz los cambios necesarios en @Transactions.jsx para cumplir con el ticket @ticket19-HU7.md
+
+- - - 
+
+A partir de @routes y sus respectivos metodos en @controllers y @dto actualiza @api-spec.yaml

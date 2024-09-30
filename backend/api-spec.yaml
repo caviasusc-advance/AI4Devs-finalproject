@@ -1,17 +1,11 @@
-openapi: 3.0.3
+openapi: 3.0.0
 info:
   title: SparkBank API
-  description: API para la gestión de usuarios, cuentas y transacciones de SparkBank.
   version: 1.0.0
-servers:
-  - url: https://api.sparkbank.com/v1
-    description: Servidor principal de SparkBank API
-
 paths:
   /users:
     post:
       summary: Crear un nuevo usuario
-      description: Registra un nuevo usuario en el sistema.
       requestBody:
         required: true
         content:
@@ -19,37 +13,32 @@ paths:
             schema:
               type: object
               properties:
-                tipo_identificacion:
+                id_type:
                   type: string
-                  example: DNI
-                numero_identificacion:
+                id_number:
                   type: string
-                  example: '12345678A'
-                nombre:
+                name:
                   type: string
-                  example: Juan Pérez
-                correo_electronico:
+                email:
                   type: string
-                  example: juan.perez@example.com
-                contraseña:
+                password:
                   type: string
-                  example: P@ssw0rd!
-                telefono:
+                phone:
                   type: string
-                  example: '+1234567890'
-                direccion:
+                address:
                   type: string
-                  example: Calle Falsa 123
-                fecha_nacimiento:
+                birth_date:
                   type: string
                   format: date
-                  example: '1980-01-01'
               required:
-                - tipo_identificacion
-                - numero_identificacion
-                - nombre
-                - correo_electronico
-                - contraseña
+                - id_type
+                - id_number
+                - name
+                - email
+                - password
+                - phone
+                - address
+                - birth_date
       responses:
         '201':
           description: Usuario creado exitosamente
@@ -58,38 +47,56 @@ paths:
               schema:
                 type: object
                 properties:
-                  id:
-                    type: integer
-                    example: 1
-                  tipo_identificacion:
+                  token:
                     type: string
-                    example: DNI
-                  numero_identificacion:
-                    type: string
-                    example: '12345678A'
-                  nombre:
-                    type: string
-                    example: Juan Pérez
-                  correo_electronico:
-                    type: string
-                    example: juan.perez@example.com
-                  telefono:
-                    type: string
-                    example: '+1234567890'
-                  direccion:
-                    type: string
-                    example: Calle Falsa 123
-                  fecha_nacimiento:
-                    type: string
-                    format: date
-                    example: '1980-01-01'
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      id_type:
+                        type: string
+                      id_number:
+                        type: string
+                      name:
+                        type: string
+                      email:
+                        type: string
+                      phone:
+                        type: string
+                      address:
+                        type: string
+                      birth_date:
+                        type: string
+                        format: date
+                      registration_date:
+                        type: string
+                        format: date-time
+                      status:
+                        type: string
+                      created:
+                        type: string
+                        format: date-time
+                      created_by:
+                        type: string
+                      updated:
+                        type: string
+                        format: date-time
+                      updated_by:
+                        type: string
         '400':
-          description: Solicitud inválida
+          description: Error en la solicitud
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
 
   /accounts:
     post:
-      summary: Crear una nueva cuenta
-      description: Crea una nueva cuenta bancaria para un usuario.
+      summary: Crear una nueva cuenta bancaria
       requestBody:
         required: true
         content:
@@ -97,24 +104,13 @@ paths:
             schema:
               type: object
               properties:
-                numero_cuenta:
+                account_type:
                   type: string
-                  example: 'ES1234567890123456789012'
-                tipo_cuenta:
-                  type: string
-                  example: ahorro
-                saldo:
+                initial_balance:
                   type: number
-                  format: float
-                  example: 1000.00
-                usuario_id:
-                  type: integer
-                  example: 1
               required:
-                - numero_cuenta
-                - tipo_cuenta
-                - saldo
-                - usuario_id
+                - account_type
+                - initial_balance
       responses:
         '201':
           description: Cuenta creada exitosamente
@@ -124,35 +120,44 @@ paths:
                 type: object
                 properties:
                   id:
-                    type: integer
-                    example: 1
-                  numero_cuenta:
                     type: string
-                    example: 'ES1234567890123456789012'
-                  tipo_cuenta:
+                  account_number:
                     type: string
-                    example: ahorro
-                  saldo:
+                  account_type:
+                    type: string
+                  balance:
                     type: number
-                    format: float
-                    example: 1000.00
-                  usuario_id:
-                    type: integer
-                    example: 1
+                  user_id:
+                    type: string
+                  created:
+                    type: string
+                    format: date-time
+                  created_by:
+                    type: string
+                  updated:
+                    type: string
+                    format: date-time
+                  updated_by:
+                    type: string
         '400':
-          description: Solicitud inválida
+          description: Error en la solicitud
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
 
   /users/{id}/accounts:
     get:
-      summary: Obtener todas las cuentas de un usuario
-      description: Obtiene todas las cuentas asociadas a un usuario específico.
+      summary: Obtener cuentas de un usuario
       parameters:
-        - name: id
-          in: path
+        - in: path
+          name: id
           required: true
-          description: ID del usuario para el cual se obtienen las cuentas.
           schema:
-            type: integer
+            type: string
       responses:
         '200':
           description: Lista de cuentas del usuario
@@ -164,20 +169,209 @@ paths:
                   type: object
                   properties:
                     id:
-                      type: integer
-                      example: 1
-                    numero_cuenta:
                       type: string
-                      example: 'ES1234567890123456789012'
-                    tipo_cuenta:
+                    account_number:
                       type: string
-                      example: ahorro
-                    saldo:
+                    account_type:
+                      type: string
+                    balance:
                       type: number
-                      format: float
-                      example: 1000.00
-                    usuario_id:
-                      type: integer
-                      example: 1
-        '404':
-          description: Usuario no encontrado
+                    created:
+                      type: string
+                      format: date-time
+                    status:
+                      type: string
+        '400':
+          description: Error en la solicitud
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+  /login/user:
+    post:
+      summary: Iniciar sesión de usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id_type:
+                  type: string
+                id_number:
+                  type: string
+                password:
+                  type: string
+              required:
+                - id_type
+                - id_number
+                - password
+      responses:
+        '201':
+          description: Inicio de sesión exitoso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  userid:
+                    type: string
+                  name:
+                    type: string
+        '400':
+          description: Error en la solicitud
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+  /logout/user:
+    post:
+      summary: Cerrar sesión de usuario
+      responses:
+        '201':
+          description: Cierre de sesión exitoso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  session:
+                    type: boolean
+        '400':
+          description: Error en la solicitud
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+  /system/{type}:
+    get:
+      summary: Obtener configuraciones del sistema
+      parameters:
+        - in: path
+          name: type
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Configuraciones del sistema
+        '400':
+          description: Error en la solicitud
+
+  /transactions:
+    post:
+      summary: Crear una nueva transacción
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                source_account_id:
+                  type: string
+                source_account_number:
+                  type: string
+                destination_account_number:
+                  type: string
+                amount:
+                  type: number
+                description:
+                  type: string
+              required:
+                - source_account_id
+                - destination_account_number
+                - amount
+      responses:
+        '201':
+          description: Transacción creada exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  source_account_id:
+                    type: string
+                  source_account_number:
+                    type: string
+                  destination_account_id:
+                    type: string
+                  destination_account_number:
+                    type: string
+                  amount:
+                    type: number
+                  description:
+                    type: string
+                  date:
+                    type: string
+                    format: date-time
+        '400':
+          description: Error en la solicitud
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+  /accounts/{accountId}/transactions:
+    get:
+      summary: Obtener historial de transacciones de una cuenta
+      parameters:
+        - in: path
+          name: accountId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Historial de transacciones de la cuenta
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    source_account_id:
+                      type: string
+                    source_account_number:
+                      type: string
+                    destination_account_id:
+                      type: string
+                    destination_account_number:
+                      type: string
+                    amount:
+                      type: number
+                    description:
+                      type: string
+                    date:
+                      type: string
+                      format: date-time
+        '400':
+          description: Error en la solicitud
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
